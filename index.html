@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora de Combinações</title>
+    <script>
+        function fatorial(n) {
+            var resultado = 1;
+            for (var i = 1; i <= n; i++) {
+                resultado *= i;
+            }
+            return resultado;
+        }
+
+        function combinacao(n, k) {
+            return fatorial(n) / (fatorial(k) * fatorial(n - k));
+        }
+
+        function calcularCombinacao() {
+            var n = document.getElementById("n").value;
+            var k = document.getElementById("k").value;
+            var resultado = combinacao(n, k);
+            document.getElementById("resultado").value = resultado;
+        }
+    </script>
+</head>
+<body>
+    <h1>Calculadora de Combinações</h1>
+    <form>
+        <label for="n">n:</label>
+        <input type="number" id="n" name="n">
+        <label for="k">k:</label>
+        <input type="number" id="k" name="k">
+        <button type="button" onclick="calcularCombinacao()">Calcular</button>
+    </form>
+    <p>Resultado: <input type="text" id="resultado" readonly></p>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Rolamento de Mensagem</title>
+</head>
+<body>
+    <input type="text" id="mensagem" value="Mensagem para rolar">
+    <button onclick="iniciarRolamento()">Iniciar Rolamento</button>
+    <button onclick="pararRolamento()">Parar Rolamento</button>
+
+    <script>
+        let intervalo;
+
+        function iniciarRolamento() {
+            const mensagem = document.getElementById('mensagem').value;
+            if (mensagem.length > 0) {
+                intervalo = setInterval(function() {
+                    const primeiroCaractere = mensagem.substring(0, 1);
+                    const restoMensagem = mensagem.substring(1);
+                    document.getElementById('mensagem').value = restoMensagem + primeiroCaractere;
+                }, 100); // Ajuste o intervalo conforme necessário
+            }
+        }
+
+        function pararRolamento() {
+            clearInterval(intervalo);
+        }
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inverter Texto</title>
+    <script>
+        const invertText = () => {
+            const inputText = document.getElementById('inputText').value.trim();
+            const wordsArray = inputText.split(' ');
+            const invertedText = wordsArray.reverse().join(' ');
+
+            document.getElementById('outputText').value = invertedText;
+        };
+    </script>
+</head>
+<body>
+    <textarea id="inputText" rows="4" cols="50"></textarea><br>
+    <textarea id="outputText" rows="4" cols="50" readonly></textarea><br>
+    <button onclick="invertText()">Inverter</button>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora Científica</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #calculator {
+            width: 300px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        #display {
+            width: 100%;
+            height: 50px;
+            margin-bottom: 10px;
+            text-align: right;
+            font-size: 20px;
+        }
+        #buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+        button {
+            height: 50px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <input type="text" id="display" readonly>
+        <div id="buttons">
+            <!-- Botões de números -->
+            <button onclick="appendNumber(1)">1</button>
+            <button onclick="appendNumber(2)">2</button>
+            <button onclick="appendNumber(3)">3</button>
+            <button onclick="appendNumber(4)">4</button>
+            <button onclick="appendNumber(5)">5</button>
+            <button onclick="appendNumber(6)">6</button>
+            <button onclick="appendNumber(7)">7</button>
+            <button onclick="appendNumber(8)">8</button>
+            <button onclick="appendNumber(9)">9</button>
+            <button onclick="appendNumber(0)">0</button>
+            <!-- Botões de operações matemáticas -->
+            <button onclick="setOperation('+')">+</button>
+            <button onclick="setOperation('-')">-</button>
+            <button onclick="setOperation('*')">*</button>
+            <button onclick="setOperation('/')">/</button>
+            <button onclick="calculatePercentage()">%</button>
+            <!-- Botões de funções científicas -->
+            <button onclick="calculateLogarithm()">Log</button>
+            <button onclick="calculateExponential()">Exp</button>
+            <button onclick="calculateSquareRoot()">√</button>
+            <button onclick="calculateFactorial()">!</button>
+            <button onclick="calculateSin()">Sin</button>
+            <button onclick="calculateCos()">Cos</button>
+            <button onclick="calculateTan()">Tan</button>
+            <button onclick="calculateHyperbolicSin()">Sinh</button>
+            <button onclick="calculateHyperbolicCos()">Cosh</button>
+            <button onclick="calculateHyperbolicTan()">Tanh</button>
+            <!-- Botões de ação -->
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="deleteLastChar()">←</button>
+            <button onclick="calculateResult()">=</button>
+        </div>
+    </div>
+    <script>
+        let display = document.getElementById('display');
+        let currentOperand = '';
+        let previousOperand = '';
+        let operation = undefined;
+
+        function appendNumber(number) {
+            if (number === '.' && currentOperand.includes('.')) return;
+            currentOperand = currentOperand.toString() + number.toString();
+            display.value = currentOperand;
+        }
+
+        function setOperation(op) {
+            if (currentOperand === '') return;
+            if (previousOperand !== '') {
+                calculateResult();
+            }
+            operation = op;
+            previousOperand = currentOperand;
+            currentOperand = '';
+        }
+
+        function calculateResult() {
+            let result;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            if (isNaN(prev) || isNaN(current)) return;
+            switch (operation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                case '%':
+                    result = prev * (current / 100);
+                    break;
+                default:
+                    return;
+            }
+            currentOperand = result;
+            operation = undefined;
+            previousOperand = '';
+            display.value = currentOperand;
+        }
+
+        function clearDisplay() {
+            currentOperand = '';
+            previousOperand = '';
+            operation = undefined;
+            display.value = '';
+        }
+
+        function deleteLastChar() {
+            currentOperand = currentOperand.toString().slice(0, -1);
+            display.value = currentOperand;
+        }
+
+        // Funções científicas
+        function calculateLogarithm() {
+            currentOperand = Math.log(currentOperand);
+            display.value = currentOperand;
+        }
+
+        function calculateExponential() {
+            currentOperand = Math.exp(currentOperand);
+            display.value = currentOperand;
+        }
+
+        function calculateSquareRoot() {
+            currentOperand = Math.sqrt(currentOperand);
+            display.value = currentOperand;
+        }
+
+        function calculateFactorial() {
+            currentOperand = factorial(currentOperand);
+            display.value = currentOperand;
+        }
+
+        function calculateSin() {
+            currentOperand = Math.sin(currentOperand * Math.PI / 180);
+            display.value = currentOperand;
+        }
+
+        function calculateCos() {
+            currentOperand = Math.cos(currentOperand * Math.PI / 180);
+            display.value = currentOperand;
+        }
+
+        function calculateTan() {
+            currentOperand = Math.tan(currentOperand * Math.PI / 180);
+            display.value = currentOperand;
+        }
+
+        function calculateHyperbolicSin() {
+            currentOperand = Math.sinh(currentOperand);
+            display.value = currentOperand;
+        }
+
+        function calculateHyperbolicCos() {
+            currentOperand = Math.cosh(currentOperand);
+            display.value = currentOperand;
+        }
+
+        function calculateHyperbolicTan() {
+            currentOperand = Math.tanh(currentOperand);
+            display.value = currentOperand;
+        }
+
+        // Função auxiliar para calcular o fatorial
+        function factorial(n) {
+            if (n === 0) {
+                return 1;
+            }
+            return n * factorial(n - 1);
+        }
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Calcular Diferença de Datas</title>
+</head>
+<body>
+    <script>
+        function calcularDiferenca() {
+            let dataAtual = new Date();
+            let dataInserida;
+            let dataFormatada;
+            let dias, meses, anos;
+
+            do {
+                dataInserida = prompt("Digite uma data no formato dd/mm/aaaa:");
+                if (!dataInserida) {
+                    alert("Data não inserida. Por favor, tente novamente.");
+                    continue;
+                }
+
+                dataFormatada = dataInserida.split("/");
+                if (dataFormatada.length !== 3 || isNaN(dataFormatada[0]) || isNaN(dataFormatada[1]) || isNaN(dataFormatada[2])) {
+                    alert("Formato de data inválido. Por favor, tente novamente.");
+                    continue;
+                }
+
+                dataInserida = new Date(dataFormatada[2], dataFormatada[1] - 1, dataFormatada[0]);
+                if (isNaN(dataInserida.getTime())) {
+                    alert("Data inválida. Por favor, tente novamente.");
+                    continue;
+                }
+
+                dias = Math.floor((dataInserida - dataAtual) / (1000 * 60 * 60 * 24));
+                meses = Math.floor(dias / 30);
+                anos = Math.floor(meses / 12);
+
+                meses %= 12;
+                dias %= 30;
+
+                document.body.innerHTML = `Faltam aproximadamente ${anos} anos, ${meses} meses e ${dias} dias para a data inserida.`;
+            } while (!dataInserida);
+        }
+
+        calcularDiferenca();
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Tema Dinâmico de Acordo com a Hora do Dia</title>
+    <style>
+        body {
+            color: black; /* Cor padrão do texto */
+        }
+    </style>
+</head>
+<body>
+    <h1>Tema Dinâmico de Acordo com a Hora do Dia</h1>
+    <p>Esta página muda de aparência de acordo com a hora do dia.</p>
+
+    <script>
+        // Função para definir o tema da página com base na hora do dia
+        function definirTema() {
+            var agora = new Date();
+            var hora = agora.getHours();
+
+            if (hora >= 6 && hora < 12) {
+                // Manhã: fundo branco e letras pretas
+                document.bgColor = "white";
+                document.body.style.color = "black";
+            } else if (hora >= 12 && hora < 18) {
+                // Tarde: fundo amarelo e letras pretas
+                document.bgColor = "yellow";
+                document.body.style.color = "black";
+            } else if (hora >= 18 && hora < 24) {
+                // Noite: fundo escuro e letras brancas
+                document.bgColor = "darkblue";
+                document.body.style.color = "white";
+            } else {
+                // Madrugada: fundo azul e letras brancas
+                document.bgColor = "blue";
+                document.body.style.color = "white";
+            }
+        }
+
+        // Chama a função definirTema quando a página é carregada
+        window.onload = definirTema;
+    </script>
+</body>
+</html>
